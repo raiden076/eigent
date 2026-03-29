@@ -3,20 +3,21 @@ FROM node:20-slim AS builder
 
 WORKDIR /app
 
-# Install git (needed by some Vite plugins) and build tools
+# Install git and build tools
 RUN apt-get update && apt-get install -y git python3 make g++ && rm -rf /var/lib/apt/lists/*
 
-# Install dependencies
+# Copy package files
 COPY package*.json ./
-# Use npm install (not ci) since there's no package-lock.json
-# Skip prepare scripts - we only need web build deps, not Electron setup
-RUN npm install --ignore-scripts
+COPY package/ ./package/
+
+# Install dependencies (need scripts for local packages)
+RUN npm install
 
 # Copy source
 COPY . .
 
 # Build the web app with verbose output
-RUN npm run build:web 2>&1 || (echo "Build failed. Checking vite config..." && cat vite.web.config.ts && exit 1)
+RUN npm run build:web -- --debug 2>&1 || (echo "=== BUILD FAILED ===" && exit 1)
 
 # Production stage
 FROM nginx:alpine
