@@ -5,8 +5,9 @@ WORKDIR /app
 
 # Install dependencies
 COPY package*.json ./
-# Skip prepare scripts and other lifecycle scripts - we only need web build deps
-RUN npm ci --ignore-scripts
+# Use npm install (not ci) since there's no package-lock.json
+# Skip prepare scripts - we only need web build deps, not Electron setup
+RUN npm install --ignore-scripts
 
 # Copy source
 COPY . .
