@@ -27,6 +27,8 @@
     "prebuild:compile": "tsc -p tsconfig.build.json && vite build",
     "prebuild": "npm run prebuild:deps:clean && npm run prebuild:compile",
     "prebuild:win": "npm run prebuild:deps && npm run prebuild:compile",
+    "build:web": "vite build --config vite.web.config.ts",
+    "build:web:prod": "npm run prebuild:deps && npm run build:web",
     "build": "npm run prebuild && electron-builder --publish never",
     "build:publish": "npm run prebuild && electron-builder --publish always",
     "build:mac": "npm run prebuild && electron-builder --mac --publish never",
